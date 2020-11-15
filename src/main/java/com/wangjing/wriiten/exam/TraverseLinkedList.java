@@ -7,6 +7,7 @@
 package com.wangjing.wriiten.exam;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -47,9 +48,9 @@ public class TraverseLinkedList {
         while (node != null) {
             // 取出下一个节点
             Node<Integer> next = node.next;
-            // head的next指向node的下个节点
+            // node的next指向head的下个节点
             node.next = head.next;
-            // 节点挂在到head的next
+            // head的next指向本次节点
             head.next = node;
             // 循环下一个节点
             node = next;
@@ -63,9 +64,22 @@ public class TraverseLinkedList {
         return traverseList;
     }
 
+    private static List<Integer> useStack(Node<Integer> node) {
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        while (node != null) {
+            linkedList.push(node.item);
+            node = node.next;
+        }
+        List<Integer> traverseList = new ArrayList<>();
+        while (!linkedList.isEmpty()) {
+            traverseList.add(linkedList.poll());
+        }
+        return traverseList;
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(listByRecursion(init()));
+        System.out.println(useStack(init()));
     }
 
     private static Node<Integer> init() {
