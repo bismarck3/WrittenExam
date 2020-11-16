@@ -48,27 +48,56 @@ public class BinaryTreeTraversal {
         }
     }
 
-    private static Map<Integer, Integer> indexForLnrOrders = new HashMap<>();
+    // 缓存中序遍历数组每个值对应的索引
+    private static Map<Integer, Integer> indexForInOrders = new HashMap<>();
 
-    private static TreeNode rebuildBinaryTree(int nlr[], int[] lnr) {
-        for (int i = 0; i < lnr.length; i++) {
-            indexForLnrOrders.put(lnr[i], i);
-        }
-        return rebuildBinaryTree(nlr, 0, nlr.length-1, 0);
+    public static TreeNode rebuildBinaryTree(int[] pre, int[] in) {
+        for (int i = 0; i < in.length; i++)
+            indexForInOrders.put(in[i], i);
+        return rebuildBinaryTree(pre, 0, pre.length - 1, 0);
     }
 
-    private static TreeNode rebuildBinaryTree(int[] nlr, int preL, int preR,
-        int lnr) {
-        TreeNode root = new TreeNode(nlr[preL]);
-        int lnrIndex = indexForLnrOrders.get(root.data);
-        int leftTreeSize = lnrIndex - lnr;
-        root.left = rebuildBinaryTree(nlr, preL+1, preL + leftTreeSize, lnr);
-        root.right = rebuildBinaryTree(nlr, preL + leftTreeSize +1, preR, lnr + 1);
+    private static TreeNode rebuildBinaryTree(int[] pre, int preL, int preR, int inL) {
+        if (preL > preR)
+            return null;
+        TreeNode root = new TreeNode(pre[preL]);
+        int inIndex = indexForInOrders.get(root.data);
+        int leftTreeSize = inIndex - inL;
+        root.left = rebuildBinaryTree(pre, preL + 1, preL + leftTreeSize, inL);
+        root.right = rebuildBinaryTree(pre, preL + leftTreeSize + 1, preR, inL + leftTreeSize + 1);
         return root;
     }
 
-    public static void main(String[] args) {
-        TreeNode treeNode = rebuildBinaryTree(new int[] {3, 9, 20, 15}, new int[] {9, 3, 15, 20, 7});
+    private static void nlrTraversal(TreeNode treeNode) {
+        if (treeNode == null) {
+            return;
+        }
+        System.out.println(treeNode.data);
+        nlrTraversal(treeNode.left);
+        nlrTraversal(treeNode.right);
+    }
 
+    private static void lnrTraversal(TreeNode treeNode) {
+        if (treeNode == null) {
+            return;
+        }
+        lnrTraversal(treeNode.left);
+        System.out.println(treeNode.data);
+        lnrTraversal(treeNode.right);
+    }
+
+    private static void lrnTraversal(TreeNode treeNode) {
+        if (treeNode == null) {
+            return;
+        }
+        nlrTraversal(treeNode.left);
+        nlrTraversal(treeNode.right);
+        System.out.println(treeNode.data);
+    }
+
+    public static void main(String[] args) {
+        TreeNode treeNode = rebuildBinaryTree(
+            new int[] {3, 9, 20, 15, 7}, new int[] {9, 3, 15, 20, 7});
+        nlrTraversal(treeNode);
     }
 }
