@@ -5,6 +5,10 @@
  * @copyright Copyright 2020 Thuisoft, Inc. All rights reserved.
  */
 package com.wangjing.wriiten.exam;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * BinaryTreeTraversal
  *
@@ -33,7 +37,7 @@ package com.wangjing.wriiten.exam;
  */
 public class BinaryTreeTraversal {
 
-    class TreeNode {
+    static class TreeNode {
         Integer data;
         TreeNode left;
         TreeNode right;
@@ -44,11 +48,27 @@ public class BinaryTreeTraversal {
         }
     }
 
-    private TreeNode rebuildBinaryTree(int nlr[], int lnr) {
-        return null;
+    private static Map<Integer, Integer> indexForLnrOrders = new HashMap<>();
+
+    private static TreeNode rebuildBinaryTree(int nlr[], int[] lnr) {
+        for (int i = 0; i < lnr.length; i++) {
+            indexForLnrOrders.put(lnr[i], i);
+        }
+        return rebuildBinaryTree(nlr, 0, nlr.length-1, 0);
+    }
+
+    private static TreeNode rebuildBinaryTree(int[] nlr, int preL, int preR,
+        int lnr) {
+        TreeNode root = new TreeNode(nlr[preL]);
+        int lnrIndex = indexForLnrOrders.get(root.data);
+        int leftTreeSize = lnrIndex - lnr;
+        root.left = rebuildBinaryTree(nlr, preL+1, preL + leftTreeSize, lnr);
+        root.right = rebuildBinaryTree(nlr, preL + leftTreeSize +1, preR, lnr + 1);
+        return root;
     }
 
     public static void main(String[] args) {
+        TreeNode treeNode = rebuildBinaryTree(new int[] {3, 9, 20, 15}, new int[] {9, 3, 15, 20, 7});
 
     }
 }
