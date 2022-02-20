@@ -52,6 +52,7 @@ public class BinaryTreeTraversal {
     private static Map<Integer, Integer> indexForInOrders = new HashMap<>();
 
     public static TreeNode rebuildBinaryTree(int[] pre, int[] in) {
+        // 中序遍历的值作为key，索引作为value
         for (int i = 0; i < in.length; i++)
             indexForInOrders.put(in[i], i);
         return rebuildBinaryTree(pre, 0, pre.length - 1, 0);
